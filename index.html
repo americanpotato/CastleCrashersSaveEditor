@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Castle Crashers Save Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #18181b;
+  --bg-panel: #222226;
+  --bg-card: #2a2a30;
+  --bg-card-hover: #34343c;
+
+  --accent: #c26d52;
+  --accent-glow: #c26d5233;
+
+  --gold: #c8a96b;
+
+  --text: #e7e5e4;
+  --text-dim: #a1a1aa;
+  --text-bright: #fafaf9;
+
+  --green: #6f9d7a;
+  --red: #c46a6a;
+
+  --border: #3a3a42;
+
+  --input-bg: #202027;
+
+  --slider-track: #3a3a42;
+  --slider-fill: #c26d52;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, var(--bg-panel), var(--bg));
+  border-bottom: 2px solid var(--border);
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.header-title {
+  /* font-family: 'Press Start 2P', monospace; */
+  font-size: 18px;
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--accent-glow);
+  letter-spacing: 1px;
+}
+
+.header-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.steam-input {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-bright);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  width: 200px;
+  transition: border-color 0.2s;
+}
+
+.steam-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn:hover { background: #d6304d; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover { background: var(--bg-card-hover); }
+
+.btn-gold {
+  background: var(--gold);
+  color: #1a1a2e;
+}
+
+.btn-gold:hover { background: #e0b535; }
+
+/* STATUS BAR */
+.status-bar {
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 30px;
+  font-size: 13px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+
+.status-dot.loaded { background: var(--green); }
+.status-dot.error { background: var(--red); }
+
+/* MAIN LAYOUT */
+.main {
+  display: flex;
+  height: calc(100vh - 130px);
+}
+
+/* CHARACTER GRID */
+.character-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.character-panel h2 {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+}
+
+.char-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.char-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.char-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.char-card.locked { opacity: 0.45; }
+
+.char-card .char-img {
+  width: 48px;
+  height: 48px;
+  background: var(--bg-panel);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.char-card .char-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.char-card .char-name {
+  font-size: 9px;
+  text-align: center;
+  color: var(--text-dim);
+  line-height: 1.2;
+  max-height: 22px;
+  overflow: hidden;
+}
+
+.char-card .char-level {
+  font-size: 8px;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.lock-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 10px;
+}
+
+.skull-badge {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+}
+
+/* EDITOR PANEL */
+.editor-panel {
+  width: 380px;
+  min-width: 380px;
+  background: var(--bg-panel);
+  border-left: 2px solid var(--border);
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.editor-panel.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editor-empty-msg {
+  color: var(--text-dim);
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.editor-header .char-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--bg-card);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.editor-header .char-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.editor-header .char-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+.editor-header .char-info .char-id {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* FORM FIELDS */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field-group-title {
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.field-label {
+  font-size: 13px;
+  color: var(--text);
+  min-width: 90px;
+  font-weight: 500;
+}
+
+.field-input {
+  flex: 1;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-bright);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.field-select {
+  flex: 1;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-bright);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.field-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* SLIDER */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slider-label {
+  font-size: 13px;
+  color: var(--text);
+  min-width: 75px;
+  font-weight: 500;
+}
+
+.slider-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 24px;
+  text-align: right;
+}
+
+input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 6px;
+  background: var(--slider-track);
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+/* CHECKBOX */
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.check-row input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.check-row label {
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3a4a6e; }
+
+/* HIDDEN FILE INPUT */
+#fileInput { display: none; }
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+  .main { flex-direction: column; }
+  .editor-panel {
+    width: 100%;
+    min-width: unset;
+    border-left: none;
+    border-top: 2px solid var(--border);
+    max-height: 50vh;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">Steam Castle Crashers Save Editor</div>
+  <div class="header-controls">
+    <input type="text" class="steam-input" id="steamIdInput" placeholder="Steam ID" value="">
+    <button class="btn btn-secondary" id="btnLoad" onclick="document.getElementById('fileInput').click()">📂 Load Save</button>
+    <button class="btn btn-gold" id="btnDownload" onclick="downloadSave()" disabled>💾 Download Save</button>
+    <input type="file" id="fileInput" accept=".dat" onchange="handleFileLoad(event)">
+  </div>
+</div>
+
+<div class="status-bar">
+  <div class="status-dot" id="statusDot"></div>
+  <span id="statusText">No save loaded — load a cc_save.dat to begin</span>
+</div>
+
+<div class="main">
+  <div class="character-panel" id="charPanel">
+    <h2>Characters</h2>
+    <div class="character-grid" id="charGrid"></div>
+  </div>
+
+  <div class="editor-panel empty" id="editorPanel">
+    <div class="editor-empty-msg" id="editorEmpty">
+      First you need to get your steam ID because your save uses your steam ID to encrypt/decrypt. <br>
+      To do this find your steam profile page and the steam ID is the ending number https://steamcommunity.com/profiles/76561199229400926 <br>
+      this user's steam id is 76561199229400926 <br> <br>
+      Now you can load a save file from C:\Program Files (x86)\Steam\userdata\ ... \204360\remote\cc_save.dat <br>
+      the \ ... \ part of the path is unique per user so start from C:\Program Files (x86)\Steam\userdata\ and click through to get to cc_save.dat <br>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/blowfish.js"></script>
+<script src="js/crypto.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/editor.js"></script>
+</body>
+</html>
