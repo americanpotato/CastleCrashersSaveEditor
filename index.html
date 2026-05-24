@@ -88,6 +88,119 @@ body {
   box-shadow: 0 0 8px var(--accent-glow);
 }
 
+.steam-input.warn {
+  border-color: #e8a838;
+  box-shadow: 0 0 8px rgba(232, 168, 56, 0.3);
+}
+
+.steam-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  position: relative;
+}
+
+.steam-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.backups-wrap {
+  position: relative;
+}
+
+.backups-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 360px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 100;
+  padding: 8px;
+}
+
+.backups-dropdown.open {
+  display: block;
+}
+
+.backup-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  gap: 8px;
+  cursor: default;
+}
+
+.backup-entry:hover {
+  background: var(--bg-card);
+}
+
+.backup-entry + .backup-entry {
+  border-top: 1px solid var(--border);
+}
+
+.backup-time {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.backup-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.15s;
+}
+
+.backup-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.backup-btn.danger:hover {
+  background: #c0392b;
+  border-color: #c0392b;
+}
+
+.backups-empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.backups-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-bright);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
 .btn {
   background: var(--accent);
   color: white;
@@ -118,6 +231,13 @@ body {
 }
 
 .btn-gold:hover { background: #e0b535; }
+
+.global-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+}
 
 /* STATUS BAR */
 .status-bar {
@@ -195,6 +315,7 @@ body {
 }
 
 .char-card.locked { opacity: 0.45; }
+.char-card.global { border-color: var(--gold); background: var(--bg-panel); }
 
 .char-card .char-img {
   width: 48px;
@@ -428,6 +549,85 @@ input[type="range"]::-webkit-slider-thumb {
   cursor: pointer;
 }
 
+/* HEX EDITOR */
+.hex-editor { font-family: 'Courier New', monospace; }
+
+.hex-header-row, .hex-row {
+  display: flex; align-items: center; gap: 3px; margin-bottom: 2px;
+}
+
+.hex-addr {
+  color: var(--text-dim); width: 22px; font-size: 11px;
+  text-align: right; user-select: none; margin-right: 5px;
+}
+
+.hex-col-hdr {
+  width: 28px; text-align: center; font-size: 10px;
+  color: var(--text-dim); user-select: none;
+}
+
+.hex-byte {
+  width: 28px; height: 22px; display: inline-flex;
+  align-items: center; justify-content: center;
+  border-radius: 3px; border: 1px solid transparent;
+  cursor: pointer; font-size: 12px; font-family: 'Courier New', monospace;
+  user-select: none; transition: background 0.08s, border-color 0.08s;
+  color: var(--text-dim);
+}
+
+.hex-byte:hover { border-color: var(--accent); background: var(--bg-card-hover); }
+.hex-byte.selected { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
+
+.sec-settings { color: #8ba4c8; }
+.sec-arenas   { color: #7ab8a8; }
+.sec-items    { color: #c8a46b; }
+.sec-relics   { color: #a47ac8; }
+.sec-animals  { color: #7ac87a; }
+.sec-weapons  { color: #c87a7a; }
+.sec-dlc      { color: #c8c87a; }
+.sec-bob      { color: #c8a07a; }
+
+.hex-legend {
+  display: flex; flex-wrap: wrap; gap: 4px 10px;
+  font-size: 11px; margin-bottom: 6px; align-items: center;
+}
+
+.hex-legend-entry { display: flex; align-items: center; gap: 4px; }
+
+.hex-legend-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
+}
+
+.hex-legend-label { color: var(--text-dim); font-size: 11px; }
+
+.hex-edit-panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 12px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.hex-edit-title {
+  font-size: 10px; color: var(--text-dim);
+  letter-spacing: 1px; text-transform: uppercase;
+  font-family: 'Courier New', monospace; margin-bottom: 2px;
+}
+
+.hex-input-row { display: flex; align-items: center; gap: 8px; }
+
+.hex-input-label {
+  color: var(--text-dim); width: 30px; font-size: 11px;
+  font-family: 'Courier New', monospace; flex-shrink: 0;
+}
+
+.hex-input {
+  flex: 1; background: var(--input-bg); border: 1px solid var(--border);
+  color: var(--text-bright); padding: 5px 8px; border-radius: 4px;
+  font-family: 'Courier New', monospace; font-size: 12px;
+}
+
+.hex-input:focus { outline: none; border-color: var(--accent); }
+
 /* SCROLLBAR */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
@@ -453,11 +653,18 @@ input[type="range"]::-webkit-slider-thumb {
 <body>
 
 <div class="header">
-  <div class="header-title">Steam Castle Crashers Save Editor</div>
+  <div class="header-title">Castle Crashers Save Editor</div>
   <div class="header-controls">
-    <input type="text" class="steam-input" id="steamIdInput" placeholder="Steam ID" value="">
+    <div class="steam-field">
+      <input type="text" class="steam-input" id="steamIdInput" placeholder="Steam ID64" value="" onblur="validateSteamId()">
+      <div class="steam-hint">Your Steam ID64 — from the end of your profile URL</div>
+    </div>
     <button class="btn btn-secondary" id="btnLoad" onclick="document.getElementById('fileInput').click()">📂 Load Save</button>
     <button class="btn btn-gold" id="btnDownload" onclick="downloadSave()" disabled>💾 Download Save</button>
+    <div class="backups-wrap">
+      <button class="btn btn-secondary" id="btnBackups" onclick="toggleBackups()">📦 Backups</button>
+      <div class="backups-dropdown" id="backupsDropdown"></div>
+    </div>
     <input type="file" id="fileInput" accept=".dat" onchange="handleFileLoad(event)">
   </div>
 </div>
@@ -475,11 +682,8 @@ input[type="range"]::-webkit-slider-thumb {
 
   <div class="editor-panel empty" id="editorPanel">
     <div class="editor-empty-msg" id="editorEmpty">
-      First you need to get your steam ID because your save uses your steam ID to encrypt/decrypt. <br>
-      To do this find your steam profile page and the steam ID is the ending number https://steamcommunity.com/profiles/76561199229400926 <br>
-      this user's steam id is 76561199229400926 <br> <br>
-      Now you can load a save file from C:\Program Files (x86)\Steam\userdata\ ... \204360\remote\cc_save.dat <br>
-      the \ ... \ part of the path is unique per user so start from C:\Program Files (x86)\Steam\userdata\ and click through to get to cc_save.dat <br>
+      1. Put in user steam 64 id<br>
+      2. Load cc_save.dat from C:\Program Files (x86)\Steam\userdata\ ... \204360\remote\cc_save.dat 
     </div>
   </div>
 </div>

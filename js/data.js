@@ -103,11 +103,55 @@ const OFF = {
   MAG: 10,
   AGI: 11,
   NORMAL_LVL: 12,
+  POTIONS: 15,
+  BOMBS: 16,
+  SANDWICHES: 17,
+  NON_CONSUMABLE: 18,
   GOLD: 19,
   INSANE_UNLOCKED: 23,
   INSANE_LVL: 24,
   SKULL: 27,
 };
+
+const NON_CONSUMABLE_ITEMS = [
+  "Compass (Normal)",
+  "Wheel (Normal)",
+  "Telescope (Normal)",
+  "Horn (Normal)",
+  "Compass (Insane)",
+  "Wheel (Insane)",
+  "Telescope (Insane)",
+  "Horn (Insane)",
+];
+
+const GLOBAL_OFF = {
+  VIBRATION: 1,
+  MUSIC_VOL: 3,
+  GORE: 5,
+  ARENAS: 8,
+  ANIMALS: 9,
+  ITEMS: 13,
+  RELICS: 18,
+  WEAPONS: 21,
+  WEAPONS_DLC: 29,
+  BOB_TIME: 48,
+  BOB_CHAR: 52,
+};
+
+const RELICS = ["Compass", "Wheel", "Telescope"];
+
+const ARENAS = ["Thieves' Arena", "Volcano Arena", "Peasant Arena", "Icy Arena"];
+
+const ITEM_WHEEL_ITEMS = [
+  "Bow", "Shovel", "Boomerang", "Ax", "Shuriken", "Horn",
+  "Knife", "Bombs", "Potions", "Mittens", "Sandwich", "Blade",
+];
+
+const ITEM_BITS = [1, 2, 3, 6, 8, 11];
+
+const ITEMS_BYTES = 2;
+const WEAPONS_MAIN = 64;
+const WEAPONS_DLC_BYTES = 8;
 
 const GLOBAL_SIZE = 64;
 const CHAR_SIZE = 48;

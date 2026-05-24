@@ -35,3 +35,13 @@ function editLevelBits(off, val) {
 function editInsaneUnlock(checked) {
   writeU8(charOffset(selectedChar) + OFF.INSANE_UNLOCKED, checked ? 0x01 : 0x00);
 }
+
+function editNonConsumable(bit, checked) {
+  const off = charOffset(selectedChar) + OFF.NON_CONSUMABLE;
+  let val = readU8(off);
+  if (checked) val |= (1 << bit);
+  else val &= ~(1 << bit);
+  writeU8(off, val);
+}
+
+

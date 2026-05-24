@@ -48,6 +48,25 @@ function writeI32BE(off, v) {
   writeU32BE(off, v >>> 0);
 }
 
+function readU32LE(off) {
+  return (saveData[off] | saveData[off+1] << 8 | saveData[off+2] << 16 | saveData[off+3] << 24) >>> 0;
+}
+function writeU32LE(off, v) {
+  saveData[off]   = v & 0xFF;
+  saveData[off+1] = (v >>> 8) & 0xFF;
+  saveData[off+2] = (v >>> 16) & 0xFF;
+  saveData[off+3] = (v >>> 24) & 0xFF;
+}
+
+function readBit(off, bit) {
+  return (saveData[off + (bit >> 3)] >> (bit & 7)) & 1;
+}
+function writeBit(off, bit, val) {
+  const b = off + (bit >> 3);
+  if (val) saveData[b] |= 1 << (bit & 7);
+  else saveData[b] &= ~(1 << (bit & 7));
+}
+
 function countBits3Bytes(off) {
   let count = 0;
   for (let i = 0; i < 3; i++) {
